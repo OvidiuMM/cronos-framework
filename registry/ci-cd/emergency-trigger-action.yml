@@ -1,0 +1,242 @@
+# Cronos Framework — Emergency Sync Trigger
+#
+# Fires a GitHub Issue labeled `cronos:emergency-sync` when a Mandatory Reset
+# Trigger condition is detected. The Solution Owner is @mentioned automatically.
+#
+# Supported triggers (comment `/cronos-trigger <type> <solution_owner> [description]` on any PR or Issue):
+#   - prompt-loop-stagnation   (4-hour prompt loop with no functional progress)
+#   - circular-hallucination   (AI proposes the same failing solution 3+ times)
+#   - chunk-breach             (hidden dependency will block Friday demo)
+#   - toolchain-interruption   (critical agentic infra outage > 2 hours)
+#
+# Manual dispatch is also available from the Actions tab.
+
+name: Cronos Emergency Sync Trigger
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+  workflow_dispatch:
+    inputs:
+      trigger_type:
+        description: "Reset trigger type"
+        required: true
+        type: choice
+        options:
+          - prompt-loop-stagnation
+          - circular-hallucination
+          - chunk-breach
+          - toolchain-interruption
+      description:
+        description: "Brief description of the situation"
+        required: true
+        type: string
+      solution_owner:
+        description: "GitHub handle of the Solution Owner (without @)"
+        required: true
+        type: string
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  # ── Parse slash-command from a comment ───────────────────────────────────
+  parse-comment:
+    name: Parse /cronos-trigger command
+    runs-on: ubuntu-latest
+    if: >
+      (github.event_name == 'issue_comment' ||
+       github.event_name == 'pull_request_review_comment') &&
+      startsWith(github.event.comment.body, '/cronos-trigger')
+    outputs:
+      trigger_type: ${{ steps.parse.outputs.trigger_type }}
+      description: ${{ steps.parse.outputs.description }}
+      solution_owner: ${{ steps.parse.outputs.solution_owner }}
+      valid: ${{ steps.parse.outputs.valid }}
+    steps:
+      - name: Parse command
+        id: parse
+        env:
+          COMMENT_BODY: ${{ github.event.comment.body }}
+        run: |
+          # Expected format: /cronos-trigger <type> <solution_owner> [description]
+          TRIGGER_TYPE=$(echo "$COMMENT_BODY" | awk '{print $2}')
+          SOLUTION_OWNER=$(echo "$COMMENT_BODY" | awk '{print $3}' | sed 's/^@//' | xargs)
+          DESCRIPTION=$(echo "$COMMENT_BODY" | cut -d' ' -f4-)
+
+          VALID_TYPES="prompt-loop-stagnation circular-hallucination chunk-breach toolchain-interruption"
+
+          if ! echo "$VALID_TYPES" | grep -qw "$TRIGGER_TYPE"; then
+            echo "valid=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Unknown trigger type: $TRIGGER_TYPE. Valid types: $VALID_TYPES"
+          elif [ -z "$SOLUTION_OWNER" ]; then
+            echo "valid=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Missing solution owner. Expected: /cronos-trigger <type> <solution_owner> [description]"
+          else
+            echo "trigger_type=$TRIGGER_TYPE" >> "$GITHUB_OUTPUT"
+            echo "description<<EOF" >> "$GITHUB_OUTPUT"
+            echo "$DESCRIPTION" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+            echo "solution_owner=$SOLUTION_OWNER" >> "$GITHUB_OUTPUT"
+            echo "valid=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  # ── Create Emergency Sync issue (comment-triggered) ──────────────────────
+  create-emergency-issue-comment:
+    name: Create Emergency Sync Issue (comment)
+    runs-on: ubuntu-latest
+    needs: parse-comment
+    if: needs.parse-comment.outputs.valid == 'true'
+    steps:
+      - name: Determine trigger metadata
+        id: meta
+        env:
+          TRIGGER_TYPE: ${{ needs.parse-comment.outputs.trigger_type }}
+        run: |
+          case "$TRIGGER_TYPE" in
+            prompt-loop-stagnation)
+              echo "emoji=🔄"      >> "$GITHUB_OUTPUT"
+              echo "title=4-Hour Prompt Loop Stagnation Detected" >> "$GITHUB_OUTPUT"
+              ;;
+            circular-hallucination)
+              echo "emoji=🤖"      >> "$GITHUB_OUTPUT"
+              echo "title=Circular AI Hallucination Detected" >> "$GITHUB_OUTPUT"
+              ;;
+            chunk-breach)
+              echo "emoji=⏰"      >> "$GITHUB_OUTPUT"
+              echo "title=72-Hour Chunk Breach Risk Identified" >> "$GITHUB_OUTPUT"
+              ;;
+            toolchain-interruption)
+              echo "emoji=🔧"      >> "$GITHUB_OUTPUT"
+              echo "title=Critical Toolchain Interruption" >> "$GITHUB_OUTPUT"
+              ;;
+          esac
+
+      - name: Create Emergency Sync Issue
+        uses: actions/github-script@v7
+        env:
+          TRIGGER_TYPE: ${{ needs.parse-comment.outputs.trigger_type }}
+          DESCRIPTION: ${{ needs.parse-comment.outputs.description }}
+          SOLUTION_OWNER: ${{ needs.parse-comment.outputs.solution_owner }}
+          EMOJI: ${{ steps.meta.outputs.emoji }}
+          ISSUE_TITLE: ${{ steps.meta.outputs.title }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const triggerType   = process.env.TRIGGER_TYPE;
+            const description   = process.env.DESCRIPTION || '_No description provided._';
+            const solutionOwner = process.env.SOLUTION_OWNER;
+            const emoji         = process.env.EMOJI;
+            const issueTitle    = process.env.ISSUE_TITLE;
+            const commentUrl    = context.payload.comment.html_url;
+            const triggeredBy   = context.payload.comment.user.login;
+
+            const body = [
+              `## ${emoji} Cronos Emergency Sync Required`,
+              '',
+              `**Trigger type:** \`${triggerType}\``,
+              `**Triggered by:** @${triggeredBy}`,
+              `**Solution Owner:** @${solutionOwner}`,
+              `**Source:** ${commentUrl}`,
+              `**Timestamp:** ${new Date().toISOString()}`,
+              '',
+              '### Situation',
+              description,
+              '',
+              '### Required Action',
+              '1. Solution Owner schedules an Emergency Sync Meeting immediately.',
+              '2. Developer stops current vibe-coding session.',
+              '3. Log this trigger in PRD Section 8 (Reset Trigger Log).',
+              '4. Resolve root cause before resuming the cycle.',
+              '',
+              '> _Generated automatically by the Cronos Emergency Trigger Action._',
+            ].join('\n');
+
+            await github.rest.issues.create({
+              owner:  context.repo.owner,
+              repo:   context.repo.repo,
+              title:  `[Cronos Emergency Sync] ${issueTitle}`,
+              body,
+              labels: ['cronos:emergency-sync'],
+              assignees: [solutionOwner],
+            });
+
+  # ── Create Emergency Sync issue (manual dispatch) ─────────────────────────
+  create-emergency-issue-manual:
+    name: Create Emergency Sync Issue (manual)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Determine trigger metadata
+        id: meta
+        env:
+          TRIGGER_TYPE: ${{ github.event.inputs.trigger_type }}
+        run: |
+          case "$TRIGGER_TYPE" in
+            prompt-loop-stagnation)
+              echo "emoji=🔄"      >> "$GITHUB_OUTPUT"
+              echo "title=4-Hour Prompt Loop Stagnation Detected" >> "$GITHUB_OUTPUT"
+              ;;
+            circular-hallucination)
+              echo "emoji=🤖"      >> "$GITHUB_OUTPUT"
+              echo "title=Circular AI Hallucination Detected" >> "$GITHUB_OUTPUT"
+              ;;
+            chunk-breach)
+              echo "emoji=⏰"      >> "$GITHUB_OUTPUT"
+              echo "title=72-Hour Chunk Breach Risk Identified" >> "$GITHUB_OUTPUT"
+              ;;
+            toolchain-interruption)
+              echo "emoji=🔧"      >> "$GITHUB_OUTPUT"
+              echo "title=Critical Toolchain Interruption" >> "$GITHUB_OUTPUT"
+              ;;
+          esac
+
+      - name: Create Emergency Sync Issue
+        uses: actions/github-script@v7
+        env:
+          TRIGGER_TYPE: ${{ github.event.inputs.trigger_type }}
+          DESCRIPTION: ${{ github.event.inputs.description }}
+          SOLUTION_OWNER: ${{ github.event.inputs.solution_owner }}
+          EMOJI: ${{ steps.meta.outputs.emoji }}
+          ISSUE_TITLE: ${{ steps.meta.outputs.title }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const triggerType   = process.env.TRIGGER_TYPE;
+            const description   = process.env.DESCRIPTION;
+            const solutionOwner = process.env.SOLUTION_OWNER;
+            const emoji         = process.env.EMOJI;
+            const issueTitle    = process.env.ISSUE_TITLE;
+            const triggeredBy   = context.actor;
+
+            const body = [
+              `## ${emoji} Cronos Emergency Sync Required`,
+              '',
+              `**Trigger type:** \`${triggerType}\``,
+              `**Triggered by:** @${triggeredBy}`,
+              `**Solution Owner:** @${solutionOwner.replace(/^@/, '').trim()}`,
+              `**Timestamp:** ${new Date().toISOString()}`,
+              '',
+              '### Situation',
+              description,
+              '',
+              '### Required Action',
+              '1. Solution Owner schedules an Emergency Sync Meeting immediately.',
+              '2. Developer stops current vibe-coding session.',
+              '3. Log this trigger in PRD Section 8 (Reset Trigger Log).',
+              '4. Resolve root cause before resuming the cycle.',
+              '',
+              '> _Generated automatically by the Cronos Emergency Trigger Action._',
+            ].join('\n');
+
+            await github.rest.issues.create({
+              owner:  context.repo.owner,
+              repo:   context.repo.repo,
+              title:  `[Cronos Emergency Sync] ${issueTitle}`,
+              body,
+              labels: ['cronos:emergency-sync'],
+              assignees: [solutionOwner.replace(/^@/, '').trim()],
+            });
