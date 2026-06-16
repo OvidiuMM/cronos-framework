@@ -123,4 +123,4 @@ This model indicates a Cronos team can complete the equivalent of a traditional 
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for submission guidelines. Contributions to `/templates` and `/registry` are licensed under the MIT License.
+See [doc/CONTRIBUTING.md](doc/CONTRIBUTING.md) for submission guidelines. Contributions to `/templates` and `/registry` are licensed under the MIT License.
