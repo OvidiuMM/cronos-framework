@@ -2,7 +2,7 @@
 
 > **Cronos Framework / Registry**
 > Copy the block below into your `.cursorrules` file (or Cursor project rules)
-> at the start of a Cronos Monday Initialization phase for Python / agentic projects.
+> at the start of a Cronos Initialization phase for Python / agentic projects.
 
 ---
 
@@ -10,7 +10,7 @@
 
 1. Create a `.cursorrules` file at your project root.
 2. Paste the rule block below (adapt the stack placeholders).
-3. Commit it on Monday so every agent context in the cycle inherits it.
+3. Commit it so every agent context in the cycle inherits it.
 
 ---
 
