@@ -1,8 +1,3 @@
-# cronos-framework
-Here is the comprehensive `README.md` for your GitHub repository, synthesized directly from the Cronos Framework methodology document.
-
----
-
 # The Cronos Framework
 
 A Strategic Methodology for Human-Validated Vibe Coding and Agentic Software Engineering.
@@ -11,90 +6,121 @@ A Strategic Methodology for Human-Validated Vibe Coding and Agentic Software Eng
 
 The software development landscape has been fundamentally reshaped by vibe coding, a paradigm shift where the developer's primary role transitions from manual code construction to high-level intent orchestration. The Cronos methodology is a formal response to the systemic risks of AI-driven development, establishing a structured framework that preserves generative velocity while embedding rigorous project management controls. By organizing development into deterministic one-week cycles, Cronos ensures that the "vibe" of creation is balanced by the "verify" of professional engineering standards.
 
+## Repository Structure
+
+```
+cronos-framework/
+├── templates/
+│   ├── agent-ready-prd.md        # Deterministic spec template for every cycle
+│   └── friday-checklist.md       # Peer review survivability checklist
+└── registry/
+    ├── cursorrules/
+    │   ├── typescript.md         # Cursor rules for TypeScript projects
+    │   └── python-agent.md       # Cursor rules for Python / agentic projects
+    └── ci-cd/
+        └── emergency-trigger-action.yml  # GitHub Action for reset trigger automation
+```
+
+### `templates/`
+
+| File | Purpose | When to use |
+|---|---|---|
+| `agent-ready-prd.md` | Fill-in-the-blank PRD with metadata, success criteria, WBS, agent instructions, and sign-off table | **Monday Initialization** — copy once per cycle before any vibe coding begins |
+| `friday-checklist.md` | Peer Reviewer survivability checklist covering correctness, security, tests, observability, and Cronos cadence compliance | **Friday Midday** — executed by the Peer Reviewer, never the author |
+
+### `registry/cursorrules/`
+
+Drop-in `.cursorrules` rule blocks that enforce Cronos hard constraints inside Cursor (or any editor that supports project-level agent instructions).
+
+| File | Stack | Key guardrails |
+|---|---|---|
+| `typescript.md` | TypeScript 5 / Node 22 | Strict mode, no `any`, hexagonal architecture, TDD, typed error handling |
+| `python-agent.md` | Python 3.12+ / LLM-orchestrated agents | `mypy --strict`, Google docstrings, `LLMGateway` abstraction, Pydantic response validation, max iteration count on agent loops |
+
+Commit your chosen `.cursorrules` file on **Monday Initialization** so every agent context window in the cycle inherits the same constraints.
+
+### `registry/ci-cd/`
+
+| File | Purpose |
+|---|---|
+| `emergency-trigger-action.yml` | GitHub Actions workflow that auto-creates a `cronos:emergency-sync` issue whenever a Mandatory Reset Trigger fires |
+
+#### Using the Emergency Trigger Action
+
+**Slash-command** — comment on any PR or Issue:
+```
+/cronos-trigger <type> <optional description>
+```
+
+**Manual dispatch** — run from the Actions tab with:
+- `trigger_type` — one of `prompt-loop-stagnation`, `circular-hallucination`, `chunk-breach`, `toolchain-interruption`
+- `description` — brief situation summary
+- `solution_owner` — GitHub handle of the Solution Owner
+
+The action creates a labelled issue, @mentions the Solution Owner, and records the timestamp — ready to paste into PRD Section 8 (Reset Trigger Log).
+
+---
+
 ## Core Roles
 
 To ensure that development speed never outpaces architectural governance, Cronos relies on a strict hierarchy:
 
 * **Solution Owner (SO):** A merged Product Manager and Product Owner role. The SO crafts agent-ready Product Requirement Documents (PRDs), manages the Work Breakdown Structure (WBS), and holds final release authority.
-
-
 * **Technical Product Owner (TPO):** Validates technical constraints in the PRDs. The TPO ensures architectural blueprints are followed and bridges business needs with technical reality.
-
-
 * **Developer:** Acts as "Mission Control" for AI agents. The Developer handles intent orchestration and daily vibe coding execution.
-
-
 * **Peer Reviewer:** Provides "Extra Human Validation". The Reviewer executes the survivability checklist to prevent author bias.
 
-
+---
 
 ## The 7-Day Cronos Rhythm
 
-The schedule is deterministic, ensuring a fixed duration of human oversight alongside high-intensity AI creation.
+| Day | Phase | Key activity |
+|---|---|---|
+| Monday | Initialization | Scaffold project; commit `.cursorrules`; fill PRD template |
+| Tuesday AM | Path Sync | 15–30 min SO + Developer alignment; zero logic doubts |
+| Tue – Wed | High-Vibe Execution | "See stuff, say stuff, run stuff" loop with the AI |
+| Thursday AM | Checkpoint & QA Sync | SO + TPO + Developer review checkpoint; build test suites |
+| Thursday | Rigorous Verification | Automated tests, security scans, visual audits |
+| Friday Midday | Demo & Review | Formal demo; Peer Reviewer runs `friday-checklist.md` |
+| Friday PM | Polish & Release | AI-generated doc sync; deploy to production-ready environment |
 
-* **Monday (Initialization):** The Developer scaffolds the project. Environment-level instructions, such as `.cursorrules`, are set during this phase.
-
-
-* **Tuesday Morning (Path Sync):** A 15-30 minute synchronization. The SO and Developer ensure the project is on the correct path with zero logic doubts.
-
-
-* **Tuesday - Wednesday (High-Vibe Execution):** A rapid conversational loop of "see stuff, say stuff, run stuff" with the AI.
-
-
-* **Thursday Morning (Checkpoint & QA Sync):** A goal-verification meeting. The SO, TPO, and Developer review the checkpoint and build the correct test suites.
-
-
-* **Thursday (Rigorous Verification):** Dedicated entirely to quality assurance. The team runs automated testing, security scans, and visual audits.
-
-
-* **Friday Midday (Demo & Review):** A formal demonstration of the weekly achievements. The SO, TPO, and Peer Reviewer conduct final validation.
-
-
-* **Friday Afternoon (Polish & Release):** Dedicated to AI-generated documentation sync and deployment to production-ready environments.
-
-
+---
 
 ## Key Mandates & Guardrails
 
 ### 1. The Focus Mandate
 
-* To preserve exponential efficiency, the Developer assigned to the cycle must have their calendar 100% blocked.
-
-
+* The Developer's calendar is 100% blocked for the cycle duration.
 * No external meetings are permitted except for methodology-specified syncs.
-
-
 
 ### 2. The 72-Hour Modularization Mandate
 
-* If a feature is estimated to require more than 3 days of active development, it must be modularized.
-
-
-* Breaking the project into functional "chunks" prevents "Vibe Drift" and ensures comprehensive verification.
-
-
+* Any feature estimated at more than 3 days of active development must be modularized.
+* Breaking the project into functional "chunks" prevents Vibe Drift and ensures comprehensive verification.
 
 ### 3. Mandatory Reset Triggers
 
-An Emergency Sync Meeting with the Solution Owner is automatically triggered if development hits specific roadblocks:
+An Emergency Sync Meeting with the Solution Owner is automatically triggered if development hits any of the following:
 
-* **4-Hour "Prompt Loop" Stagnation:** Spending more than 4 consecutive hours in a conversational loop without achieving a functional state.
+| Trigger | Condition |
+|---|---|
+| 🔄 Prompt Loop Stagnation | > 4 consecutive hours in a loop without a functional state |
+| 🤖 Circular Hallucination | AI proposes the same failing solution 3+ times |
+| ⏰ 72-Hour Chunk Breach | Hidden dependencies found by Tuesday that will block Friday demo |
+| 🔧 Toolchain Interruption | Critical agentic infra outage lasting > 2 hours |
 
+Log every trigger in **PRD Section 8** and use `emergency-trigger-action.yml` to notify the Solution Owner automatically.
 
-* **Circular Hallucination:** The AI agent proposes the same failing solution more than three times.
-
-
-* **72-Hour "Chunk" Breach:** Identifying hidden dependencies by Tuesday that will prevent a functional demo by Friday.
-
-
-* **Tool-Chain Interruption:** Outage of critical agentic infrastructure lasting more than 2 hours.
-
-
+---
 
 ## Theoretical Modeling of Cronos Efficiency
 
-The productivity gain of the Cronos framework can be modeled relative to traditional development by calculating the implementation speedup and validation overhead:
+$$P=\frac{T_{traditional}}{T_{cronos}}=\frac{\sum T_{manual}}{\sum\left(\frac{T_{vibe}}{S_{i}}\right)+T_{validation}}$$
 
-$$P=\frac{T_{traditional}}{T_{cronos}}=\frac{\sum T_{manual}}{\sum(\frac{T_{vibe}}{S_{i}})+T_{validation}}$$
+This model indicates a Cronos team can complete the equivalent of a traditional 40-hour week in approximately 11–14 hours — an efficiency gain of **2.85×–3.64×**.
 
-This mathematical model indicates that a Cronos team can complete the work of a traditional 40-hour week in approximately 11 to 14 hours. This represents an efficiency gain between 2.85x and 3.64x, allowing developers to manage multiple small projects simultaneously with high confidence.
+---
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for submission guidelines. Contributions to `/templates` and `/registry` are licensed under the MIT License.
