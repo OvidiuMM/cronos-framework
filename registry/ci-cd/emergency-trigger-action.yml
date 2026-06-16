@@ -69,8 +69,10 @@ jobs:
 
           if echo "$VALID_TYPES" | grep -qw "$TRIGGER_TYPE"; then
             echo "trigger_type=$TRIGGER_TYPE" >> "$GITHUB_OUTPUT"
-            echo "description=$DESCRIPTION"   >> "$GITHUB_OUTPUT"
-            echo "valid=true"                 >> "$GITHUB_OUTPUT"
+            echo "description<<EOF" >> "$GITHUB_OUTPUT"
+            echo "$DESCRIPTION" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+            echo "valid=true" >> "$GITHUB_OUTPUT"
           else
             echo "valid=false" >> "$GITHUB_OUTPUT"
             echo "::warning::Unknown trigger type: $TRIGGER_TYPE. Valid types: $VALID_TYPES"
