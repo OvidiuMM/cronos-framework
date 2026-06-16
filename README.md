@@ -55,10 +55,10 @@ Then commit and push the file. GitHub Actions only runs workflows stored in `.gi
 
 **Slash-command** — comment on any PR or Issue:
 ```
-/cronos-trigger <type> <optional description>
+/cronos-trigger <type> <solution_owner> [description]
 ```
 
-**Manual dispatch** — run from the Actions tab with:
+**Manual dispatch** — after copying this workflow into `.github/workflows/` in your project repo, run it from the Actions tab with:
 - `trigger_type` — one of `prompt-loop-stagnation`, `circular-hallucination`, `chunk-breach`, `toolchain-interruption`
 - `description` — brief situation summary
 - `solution_owner` — GitHub handle of the Solution Owner
