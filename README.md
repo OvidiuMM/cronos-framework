@@ -47,6 +47,12 @@ Commit your chosen `.cursorrules` file on **Monday Initialization** so every age
 
 #### Using the Emergency Trigger Action
 
+**Installation** — copy the workflow file into your repository's workflows directory:
+```bash
+cp registry/ci-cd/emergency-trigger-action.yml .github/workflows/emergency-trigger-action.yml
+```
+Then commit and push the file. GitHub Actions only runs workflows stored in `.github/workflows/`.
+
 **Slash-command** — comment on any PR or Issue:
 ```
 /cronos-trigger <type> <optional description>
