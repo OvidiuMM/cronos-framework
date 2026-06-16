@@ -207,7 +207,7 @@ jobs:
               '',
               `**Trigger type:** \`${triggerType}\``,
               `**Triggered by:** @${triggeredBy}`,
-              `**Solution Owner:** @${solutionOwner}`,
+              `**Solution Owner:** @${solutionOwner.replace(/^@/, '').trim()}`,
               `**Timestamp:** ${new Date().toISOString()}`,
               '',
               '### Situation',
@@ -228,5 +228,5 @@ jobs:
               title:  `[Cronos Emergency Sync] ${issueTitle}`,
               body,
               labels: ['cronos:emergency-sync'],
-              assignees: [solutionOwner],
+              assignees: [solutionOwner.replace(/^@/, '').trim()],
             });
