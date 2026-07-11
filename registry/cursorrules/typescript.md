@@ -32,6 +32,15 @@ Your role is "Mission Control" — you orchestrate intent, you do not freestyle.
 - Tests are written before implementation (TDD Red-Green-Refactor).
 - No direct DOM manipulation outside of designated UI layer files.
 
+## Cronos Process Rules (v2.1)
+- Build endpoints, services, and public methods just-in-time, when their first caller exists. Never scaffold from the spec alone.
+- Format only edited paths: `npx prettier --write <paths-you-edited>`. Never run repo-wide format aliases (`npm run format`).
+- Every regression-guard test must be observed FAILING on the buggy code before it is trusted. Comment the test with the original failure mode.
+- Verification commands must run the type-check explicitly (`tsc --noEmit` / `build:check`). Treat a suite-level test failure with zero failing assertions as a compile/load error; confirm with `--runInBand`.
+- Required parameters fail loud: throw on missing, never silently default.
+- Before designing an integration with an external system, grep sibling repos for a working integration against that same system first.
+- Never modify your own permission or settings files. Never attempt to self-grant permissions.
+
 ## Architecture Conventions
 - Follow the hexagonal / ports-and-adapters pattern unless the PRD specifies otherwise.
 - Business logic lives in `src/domain/`. Infrastructure adapters live in `src/infra/`.

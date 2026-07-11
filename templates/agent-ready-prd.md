@@ -9,13 +9,14 @@
 
 | Field | Value |
 |---|---|
-| PRD ID | `PRD-YYYY-WW-NNN` |
-| Cycle Start | YYYY-MM-DD (Monday) |
-| Solution Owner | @handle |
-| Technical Product Owner | @handle |
-| Developer | @handle |
-| Peer Reviewer | @handle |
-| Status | `Draft` / `TPO-Validated` / `In-Execution` / `Done` |
+| PRD ID | `PRD-YYYY-NNN` |
+| Cycle Start (D1) | YYYY-MM-DD — any working day; weekends/holidays pause the D-clock |
+| PM | @handle |
+| Implementer | @handle |
+| Validator | @handle — **must differ from Implementer at Medium+ risk (Gate 2)** |
+| Risk tier | Low / Medium / High |
+| Consecutive cycles (this Implementer) | n of max 3 — 4th requires written PM exception (Chaining Limit) |
+| Status | `Draft` / `PM-Validated` / `In-Execution` / `Done` |
 
 ---
 
@@ -50,12 +51,13 @@ Each criterion must be binary — either it passes or it does not.
 
 - Anything NOT listed above is out of scope by default
 - Known exclusions: …
+- Pre-existing debt (lint backlog, format backlog) is **catalogued, not fixed** — fixes hide inside reformats
 
 ---
 
 ## 5. Technical Constraints
 
-> TPO signs off on this section before execution begins.
+> The PM signs off on this section before execution begins.
 
 | Constraint | Detail |
 |---|---|
@@ -64,9 +66,11 @@ Each criterion must be binary — either it passes or it does not.
 | Architecture pattern | e.g. Domain-Driven hexagonal |
 | Infra target | e.g. Vercel Edge + Supabase |
 | Auth strategy | e.g. NextAuth v5 / JWT |
+| External integrations | **Sibling-repo check done?** Before designing any external-system integration, grep sibling repos for a working integration against that same system — proven in-org code outranks first-principles research. Link findings here. |
+| Deployment artifacts | Enumerate everything that must ship alongside code: security rules, IAM grants, lifecycle rules, env config, feature flags. These are release-critical (D5 checklist §7). |
 | Banned approaches | List anything the agent must not do |
 
-**TPO sign-off:** ☐ Approved — @handle — YYYY-MM-DD
+**PM technical sign-off:** ☐ Approved — @handle — YYYY-MM-DD
 
 ---
 
@@ -83,6 +87,14 @@ Hard constraints:
 - Never introduce dependencies not listed in Section 5.
 - Every function must have a JSDoc / docstring before it is committed.
 - Tests are written before implementation (TDD).
+- Any regression-guard test must be observed FAILING on the buggy code before it is trusted.
+- Build endpoints, services, and public methods just-in-time, when their first
+  caller exists — never scaffold them because the spec lists them.
+- Format only the paths you actually edited (e.g. `npx prettier --write <paths>`).
+  Never run repo-wide format aliases.
+- Required parameters fail loud: throw on missing, never silently default.
+- Never modify your own permission or settings files. Never attempt to
+  self-grant permissions, in any cycle, for any reason.
 - If you are stuck for more than 4 hours on the same problem, stop and report.
 
 Output format for each task:
@@ -96,19 +108,21 @@ Output format for each task:
 
 ## 7. Work Breakdown Structure (WBS)
 
+> Back-half rows are **provisional**: before building any row whose design predates the rows now built, re-ask "given what already exists, does this row's original shape still hold?"
+
 | ID | Task | Owner | Day | Estimate | Status |
 |---|---|---|---|---|---|
-| T-01 | Scaffold project structure | Dev | Mon | 2 h | ☐ |
-| T-02 | Implement feature A | Dev | Tue | 4 h | ☐ |
-| T-03 | Write unit tests for A | Dev | Wed | 2 h | ☐ |
-| T-04 | Security scan | Dev | Thu | 1 h | ☐ |
-| T-05 | Peer review | Reviewer | Fri | 1 h | ☐ |
+| T-01 | Scaffold project structure | Implementer | D1 | 2 h | ☐ |
+| T-02 | Implement feature A | Implementer | D2 | 4 h | ☐ |
+| T-03 | Write unit tests for A | Implementer | D3 | 2 h | ☐ |
+| T-04 | Security scan + fresh-eyes audit | Implementer | D4 | 2 h | ☐ |
+| T-05 | Validation pass (`d5-checklist.md`) | Validator | D5 | 2 h | ☐ |
 
 ---
 
 ## 8. Reset Trigger Log
 
-If a Mandatory Reset Trigger fires, record it here.
+If a Mandatory Reset Trigger fires, record it here. Soft trigger: the same "Friction" line in two consecutive Daily Pulses → PM check-in.
 
 | # | Trigger Type | Timestamp | Description | Resolution |
 |---|---|---|---|---|
@@ -116,19 +130,36 @@ If a Mandatory Reset Trigger fires, record it here.
 
 ---
 
-## 9. Risks & Mitigations
+## 9. Amendment Log (Gate 1)
+
+Every dated change to this PRD after PM sign-off is logged here and classified. **Material** rows block code until the PM re-approves (bump `approved_through_amendment`). Verification-fix and Cosmetic rows are logged but do not re-arm the gate. The Implementer proposes the class; the Validator can contest it — misclassifying Material as Cosmetic is a gate violation.
+
+`approved_through_amendment:` 0
+
+| # | Date | Class (Material / Verif-fix / Cosmetic) | Change | PM re-approval |
+|---|---|---|---|---|
+| 1 | — | — | — | — |
+
+> **Size rule:** when this PRD exceeds ~20 KB, produce a **digest** (≤2 KB: current state, active row, open amendments) as the agent's session-start context, and collapse completed WBS rows to one-liners with commit pointers.
+
+---
+
+## 10. Risks & Mitigations
 
 | Risk | Likelihood | Impact | Mitigation |
 |---|---|---|---|
-| Hidden dependency discovered after Monday | Medium | High | Raise in Tuesday Path Sync |
+| Hidden dependency discovered after D1 | Medium | High | Raise in D2 Path Sync |
 | AI circular hallucination on X | Low | Medium | Pin to a known-good model snapshot |
 
 ---
 
-## 10. Sign-Off
+## 11. Sign-Off
 
 | Role | Name | Date | Signature |
 |---|---|---|---|
-| Solution Owner | | | ☐ |
-| Technical Product Owner | | | ☐ |
-| Peer Reviewer (Friday) | | | ☐ |
+| PM (plan + technical) | | | ☐ |
+| Validator (D5) — ≠ Implementer at Medium+ risk | | | ☐ |
+
+**Release decision (D5 PM):** ☐ Shipped ☐ Shipped with conditions ☐ Held ☐ Rolled back
+
+> The cycle is **not closed** until the retro is filled by all three roles (or an explicit "uneventful" entry per role).

@@ -2,17 +2,22 @@
 
 A Strategic Methodology for Human-Validated Vibe Coding and Agentic Software Engineering.
 
+**Current version: v2.1** — see [doc/v2.1-amendments.md](doc/v2.1-amendments.md) for the full rationale behind each change, derived from four production cycle retrospectives.
+
 ## Overview
 
-The software development landscape has been fundamentally reshaped by vibe coding, a paradigm shift where the developer's primary role transitions from manual code construction to high-level intent orchestration. The Cronos methodology is a formal response to the systemic risks of AI-driven development, establishing a structured framework that preserves generative velocity while embedding rigorous project management controls. By organizing development into deterministic one-week cycles, Cronos ensures that the "vibe" of creation is balanced by the "verify" of professional engineering standards.
+The software development landscape has been fundamentally reshaped by vibe coding, a paradigm shift where the developer's primary role transitions from manual code construction to high-level intent orchestration. The Cronos methodology is a formal response to the systemic risks of AI-driven development, establishing a structured framework that preserves generative velocity while embedding rigorous project management controls. By organizing development into deterministic five-day cycles, Cronos ensures that the "vibe" of creation is balanced by the "verify" of professional engineering standards.
 
 ## Repository Structure
 
 ```
 cronos-framework/
+├── doc/
+│   └── v2.1-amendments.md        # Rationale for every v2.1 change, with retro evidence
 ├── templates/
 │   ├── agent-ready-prd.md        # Deterministic spec template for every cycle
-│   └── friday-checklist.md       # Peer review survivability checklist
+│   ├── d5-checklist.md           # Validator survivability checklist (run on D5)
+│   └── daily-pulse.md            # Three-line async end-of-day update
 └── registry/
     ├── cursorrules/
     │   ├── typescript.md         # Cursor rules for TypeScript projects
@@ -25,8 +30,9 @@ cronos-framework/
 
 | File | Purpose | When to use |
 |---|---|---|
-| `agent-ready-prd.md` | Fill-in-the-blank PRD with metadata, success criteria, WBS, agent instructions, and sign-off table | **Monday Initialization** — copy once per cycle before any vibe coding begins |
-| `friday-checklist.md` | Peer Reviewer survivability checklist covering correctness, security, tests, observability, and Cronos cadence compliance | **Friday Midday** — executed by the Peer Reviewer, never the author |
+| `agent-ready-prd.md` | Fill-in-the-blank PRD with metadata, success criteria, WBS, agent instructions, amendment log, and sign-off table | **D1 Initialization** — copy once per cycle before any vibe coding begins |
+| `d5-checklist.md` | Validator survivability checklist covering correctness, security, tests, deployment artifacts, observability, and Cronos cadence compliance | **D5 Midday** — executed by the Validator, never the Implementer |
+| `daily-pulse.md` | Three-line async update (Landed / Next / Friction) | **End of every cycle day** — posted by the Implementer; no meeting |
 
 ### `registry/cursorrules/`
 
@@ -34,10 +40,10 @@ Drop-in `.cursorrules` rule blocks that enforce Cronos hard constraints inside C
 
 | File | Stack | Key guardrails |
 |---|---|---|
-| `typescript.md` | TypeScript 5 / Node 22 | Strict mode, no `any`, hexagonal architecture, TDD, typed error handling |
-| `python-agent.md` | Python 3.12+ / LLM-orchestrated agents | `mypy --strict`, Google docstrings, `LLMGateway` abstraction, Pydantic response validation, max iteration count on agent loops |
+| `typescript.md` | TypeScript 5 / Node 22 | Strict mode, no `any`, hexagonal architecture, TDD, typed error handling, Cronos process rules |
+| `python-agent.md` | Python 3.12+ / LLM-orchestrated agents | `mypy --strict`, Google docstrings, `LLMGateway` abstraction, Pydantic response validation, max iteration count on agent loops, Cronos process rules |
 
-Commit your chosen `.cursorrules` file on **Monday Initialization** so every agent context window in the cycle inherits the same constraints.
+Commit your chosen `.cursorrules` file on **D1 Initialization** so every agent context window in the cycle inherits the same constraints.
 
 ### `registry/ci-cd/`
 
@@ -61,34 +67,38 @@ Then commit and push the file. GitHub Actions only runs workflows stored in `.gi
 **Manual dispatch** — after copying this workflow into `.github/workflows/` in your project repo, run it from the Actions tab with:
 - `trigger_type` — one of `prompt-loop-stagnation`, `circular-hallucination`, `chunk-breach`, `toolchain-interruption`
 - `description` — brief situation summary
-- `solution_owner` — GitHub handle of the Solution Owner
+- `solution_owner` — GitHub handle of the PM (the workflow input keeps its legacy name for compatibility)
 
-The action creates a labelled issue, @mentions the Solution Owner, and records the timestamp — ready to paste into PRD Section 8 (Reset Trigger Log).
+The action creates a labelled issue, @mentions the PM, and records the timestamp — ready to paste into PRD Section 8 (Reset Trigger Log).
 
 ---
 
 ## Core Roles
 
-To ensure that development speed never outpaces architectural governance, Cronos relies on a strict hierarchy:
+Cronos v2.1 uses a three-role model. (v2.0 used four roles — Solution Owner, Technical Product Owner, Developer, Peer Reviewer; the SO and TPO responsibilities are merged into the PM, and the remaining roles are renamed to match how the framework is run in practice.)
 
-* **Solution Owner (SO):** A merged Product Manager and Product Owner role. The SO crafts agent-ready Product Requirement Documents (PRDs), manages the Work Breakdown Structure (WBS), and holds final release authority.
-* **Technical Product Owner (TPO):** Validates technical constraints in the PRDs. The TPO ensures architectural blueprints are followed and bridges business needs with technical reality.
-* **Developer:** Acts as "Mission Control" for AI agents. The Developer handles intent orchestration and daily vibe coding execution.
-* **Peer Reviewer:** Provides "Extra Human Validation". The Reviewer executes the survivability checklist to prevent author bias.
+* **PM:** Crafts agent-ready PRDs, manages the Work Breakdown Structure (WBS), validates technical constraints, arms the plan-approval gate (Gate 1), and holds final release authority. *(absorbs the former Solution Owner + Technical Product Owner roles)*
+* **Implementer:** Acts as "Mission Control" for AI agents — intent orchestration and daily vibe coding execution. Posts the Daily Pulse. *(formerly Developer)*
+* **Validator:** Provides "Extra Human Validation." Runs the D5 survivability checklist and the adversarial validation pass. **Must not be the same person as the Implementer** (Gate 2). *(formerly Peer Reviewer)*
 
 ---
 
-## The 7-Day Cronos Rhythm
+## The Cronos Rhythm (D1–D5)
+
+A cycle is exactly **5 working days** and may start on **any working day** — the rhythm is relative, not bound to the calendar week. Weekends and holidays pause the clock: a cycle started Thursday runs Thu (D1), Fri (D2), Mon (D3), Tue (D4), Wed (D5).
 
 | Day | Phase | Key activity |
 |---|---|---|
-| Monday | Initialization | Scaffold project; commit `.cursorrules`; fill PRD template |
-| Tuesday AM | Path Sync | 15–30 min SO + Developer alignment; zero logic doubts |
-| Tue – Wed | High-Vibe Execution | "See stuff, say stuff, run stuff" loop with the AI |
-| Thursday AM | Checkpoint & QA Sync | SO + TPO + Developer review checkpoint; build test suites |
-| Thursday | Rigorous Verification | Automated tests, security scans, visual audits |
-| Friday Midday | Demo & Review | Formal demo; Peer Reviewer runs `friday-checklist.md` |
-| Friday PM | Polish & Release | AI-generated doc sync; deploy to production-ready environment |
+| D1 | Initialization | Scaffold project; commit `.cursorrules`; fill PRD template |
+| D2 AM | Path Sync | 15–30 min PM + Implementer alignment; zero logic doubts |
+| D2 – D3 | High-Vibe Execution | "See stuff, say stuff, run stuff" loop with the AI |
+| D4 AM | Checkpoint & QA Sync | PM + Implementer review checkpoint; build test suites |
+| D4 | Rigorous Verification | Automated tests, security scans, fresh-eyes audit |
+| D5 Midday | Demo & Review | Formal demo; Validator runs `d5-checklist.md` |
+| D5 PM | Polish & Release | Doc sync; retro; release decision |
+| Daily EOD | **Daily Pulse** | Implementer posts the three-line async update (`daily-pulse.md`) — no meeting |
+
+The fixed five-day length is the framework's core control. Decoupling from weekdays is **not** license to stretch to six days or compress to four.
 
 ---
 
@@ -96,8 +106,9 @@ To ensure that development speed never outpaces architectural governance, Cronos
 
 ### 1. The Focus Mandate
 
-* The Developer's calendar is 100% blocked for the cycle duration.
+* The Implementer's calendar is 100% blocked for the cycle duration.
 * No external meetings are permitted except for methodology-specified syncs.
+* The Daily Pulse is the connection valve: the team sees daily progress without a meeting.
 
 ### 2. The 72-Hour Modularization Mandate
 
@@ -106,16 +117,60 @@ To ensure that development speed never outpaces architectural governance, Cronos
 
 ### 3. Mandatory Reset Triggers
 
-An Emergency Sync Meeting with the Solution Owner is automatically triggered if development hits any of the following:
+An Emergency Sync Meeting with the PM is automatically triggered if development hits any of the following:
 
 | Trigger | Condition |
 |---|---|
 | 🔄 Prompt Loop Stagnation | > 4 consecutive hours in a loop without a functional state |
 | 🤖 Circular Hallucination | AI proposes the same failing solution 3+ times |
-| ⏰ 72-Hour Chunk Breach | Hidden dependencies found by Tuesday that will block Friday demo |
+| ⏰ 72-Hour Chunk Breach | Hidden dependencies found by D2 that will block the D5 demo |
 | 🔧 Toolchain Interruption | Critical agentic infra outage lasting > 2 hours |
 
-Log every trigger in **PRD Section 8** and use `emergency-trigger-action.yml` to notify the Solution Owner automatically.
+**Soft trigger (early warning):** the same "Friction" line appearing in two consecutive Daily Pulses prompts a PM check-in — catching stagnation from outside before the 4-hour hard trigger fires from inside.
+
+Log every trigger in **PRD Section 8** and use `emergency-trigger-action.yml` to notify the PM automatically.
+
+### 4. The Cycle Chaining Limit
+
+* No person runs more than **3 consecutive delivery cycles** in the same role. After 3 chained cycles, the next week is mandatory non-delivery time: a **Technical Health Cycle** or unblocked calendar.
+* The Technical Health Cycle is not optional recovery that can be traded away — it is the scheduled owner of the deferred-debt rows ("Tech Health Cycle") in every retro's Open Follow-ups table.
+* Switching roles (Implementer → Validator) resets the chain, since validation is a half-day commitment, not a blocked week.
+* Assigning a 4th consecutive delivery cycle requires an explicit, written, time-bounded exception from the PM.
+* The limit counts **cycles, not calendar weeks** — weekend-straddling starts (see D1–D5 rhythm) don't reset it.
+
+### 5. The Independent Validation Gate (Gate 2)
+
+* Any cycle at **Medium risk or higher** must name a Validator who is not the Implementer, in the PRD header, at D1.
+* A solo cycle at that tier is a framework deviation requiring written sign-off from the release authority plus a stated compensating control.
+* Evidence: the one production cycle that skipped this gate carried its two riskiest changes as unresolved follow-ups for two subsequent cycles.
+
+### 6. The Recurrence Rule
+
+* Any lesson that appears in **two consecutive retros** must be converted into an enforced rule — a `.cursorrules` entry, a CI check, or a skill — in the following cycle.
+* A twice-written lesson is a process bug: written lessons demonstrably do not propagate on their own.
+
+---
+
+## Verification & Release Gates
+
+**Gate 1 — Plan re-arm.** Plan amendments are classified as **Material** (new scope / changed design / superseded decision → blocks code until the PM re-approves), **Verification-fix** (in-scope fix from the verification phase → logged, no re-arm), or **Cosmetic** (→ logged, no re-arm). The Implementer proposes the class; the Validator can contest it.
+
+**Fresh-eyes audit.** Between "tests pass" and the D5 demo, a fresh agent context (or fresh human) audits an explicit file list against a 🔴/🟠/🟡/✅ rubric. Audit findings are claims, not facts — the Implementer verifies each against the actual code before acting.
+
+**Proven-red regression tests.** A regression test that has never been observed failing does not count as a regression guard. The verification record must show the red run.
+
+**Deployment artifacts are release-critical.** Security rules, IAM grants, bucket lifecycle rules, env config, and feature flags are enumerated in the PRD and verified deployed — or explicitly gated — before the release decision is marked Shipped.
+
+**Release decision (four states):**
+
+| State | Meaning |
+|---|---|
+| ✅ **Shipped** | Production, unconditional |
+| ✅⚠️ **Shipped with conditions** | Deployed (possibly staging-only); named conditions tracked as follow-ups; decision reopens if a condition surfaces a real problem |
+| ⏸️ **Held** | Not released; named unblock condition |
+| ↩️ **Rolled back** | Released then reverted; reason recorded |
+
+**Retro is a close gate.** A cycle is not closed until the retro has all three role sections filled (or an explicit "uneventful, nothing to report" per role). Learning promotion runs only against closed cycles.
 
 ---
 
