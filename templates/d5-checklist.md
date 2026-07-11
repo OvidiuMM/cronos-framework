@@ -106,7 +106,7 @@
 
 ## 10. Cronos Cadence Compliance
 
-- [ ] The 72-Hour Modularisation Mandate was respected — no chunk exceeded 3 days
+- [ ] The 72-Hour Modularization Mandate was respected — no chunk exceeded 3 days
 - [ ] All Reset Trigger events are logged in PRD Section 8
 - [ ] Every plan amendment is classified (Material / Verification-fix / Cosmetic) and Material rows show PM re-approval before code proceeded (Gate 1)
 - [ ] Daily Pulses exist for every cycle day

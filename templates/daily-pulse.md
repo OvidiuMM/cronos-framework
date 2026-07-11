@@ -46,4 +46,4 @@ Friction: Agent proposed the same emulator-config fix twice — watching for Cir
 3. **"Friction" is the early-warning channel.** Name anything that smells like a Reset Trigger *before* it crosses the mandatory threshold (4h loop / 3× repeated proposal).
 4. **PM scan routine:** the PM reads pulses each morning. The same Friction line in **two consecutive pulses** is a soft trigger — check in with the Implementer, don't wait for the hard trigger.
 5. **No replies required.** The pulse is a broadcast, not a thread. If discussion is needed, that's a Path Sync topic or an Emergency Sync, per the normal rules.
-6. **`Next` doubles as the plan's `next_step` pointer.** The pulse is the record; the plan field stays a one-line pointer.
+6. **`Next` doubles as the PRD's current-task pointer.** The pulse is the daily record; the WBS status column stays a pointer. (Teams whose planning tooling has a dedicated next-step field can point it at the latest pulse.)
