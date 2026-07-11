@@ -13,6 +13,7 @@ The software development landscape has been fundamentally reshaped by vibe codin
 ```
 cronos-framework/
 ├── doc/
+│   ├── Cronos_Framework_v2.1.pdf # The methodology paper, v2.1 (Parts A–C + new Part D)
 │   └── v2.1-amendments.md        # Rationale for every v2.1 change, with retro evidence
 ├── templates/
 │   ├── agent-ready-prd.md        # Deterministic spec template for every cycle
