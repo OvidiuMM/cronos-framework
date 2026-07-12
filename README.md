@@ -14,9 +14,13 @@ The software development landscape has been fundamentally reshaped by vibe codin
 cronos-framework/
 ├── doc/
 │   ├── Cronos_Framework_v2.1.pdf # The methodology paper, v2.1 (Parts A–C + new Part D)
+│   ├── learning-propagation.md   # The AI Toolkit layer: cross-cycle memory & promotion pipeline
 │   └── v2.1-amendments.md        # Rationale for every v2.1 change, with retro evidence
+├── examples/
+│   └── 0001-payment-links-example/ # A complete worked cycle folder (plan → retro)
 ├── templates/
 │   ├── agent-ready-prd.md        # Deterministic spec template for every cycle
+│   ├── cycle/                    # Cycle folder convention: prompts log, ADR log, validation, retro
 │   ├── d5-checklist.md           # Validator survivability checklist (run on D5)
 │   └── daily-pulse.md            # Three-line async end-of-day update
 └── registry/
@@ -172,6 +176,8 @@ Log every trigger in **PRD Section 8** and use `emergency-trigger-action.yml` to
 | ↩️ **Rolled back** | Released then reverted; reason recorded |
 
 **Retro is a close gate.** A cycle is not closed until the retro has all three role sections filled (or an explicit "uneventful, nothing to report" per role). Learning promotion runs only against closed cycles.
+
+**Learning propagation.** What a cycle learns must outlive the cycle: prompts, skills, and knowledge promote into a versioned AI Toolkit at close, with thresholds and backlinks. See [doc/learning-propagation.md](doc/learning-propagation.md) and the worked example in [examples/](examples/0001-payment-links-example/).
 
 ---
 
