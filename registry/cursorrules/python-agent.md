@@ -33,6 +33,20 @@ Your role is "Mission Control" — you orchestrate intent, you do not freestyle.
 - Tests are written before implementation (TDD Red-Green-Refactor) using `pytest`.
 - No `print()` in library code. Use the `logging` module with structured output.
 
+## Cronos Process Rules (v2.1)
+- Build endpoints, services, and public methods just-in-time, when their first caller exists. Never scaffold from the spec alone.
+- Format only edited paths: `ruff format <paths-you-edited>`. Never run repo-wide format aliases.
+- Every regression-guard test must be observed FAILING on the buggy code before it is trusted. Comment the test with the original failure mode.
+- Verification commands must run `mypy --strict` explicitly, not rely on the test runner alone. Treat a suite that collects zero tests as a load error, not a pass.
+- Required parameters fail loud: raise on missing, never silently default.
+- Before designing an integration with an external system, grep sibling repos for a working integration against that same system first.
+- Never modify your own permission or settings files. Never attempt to self-grant permissions.
+- Never amend commits unless explicitly asked. When a hook fails, the commit didn't happen — `--amend` rewrites the previous commit.
+- Never commit `.env` files or credentials. Even if staged, refuse and flag.
+- One concept per change: flag unrelated bugs and debt, don't quietly fix them in the same diff.
+- Write tests against the spec's acceptance criteria, not against the code you wrote.
+- For UI changes, state explicitly when you could not run the browser — type-checks verify code correctness, not feature correctness.
+
 ## Agent / LLM-Specific Rules
 - Prompt templates are stored in `src/prompts/` as `.jinja2` files — never inline in code.
 - All LLM calls go through a single `LLMGateway` interface in `src/infra/llm/`.
