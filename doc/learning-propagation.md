@@ -107,7 +107,7 @@ Teams typically run two repos: the **public methodology** (this framework) and t
 - **During execution:** `prompts/` entries are pasted as needed; heavily used ones migrate into the project's `.cursorrules`/agent guardrails.
 - **Skills** are not optional: once a skill exists for an operation (e.g. narrow-format), invoking the raw operation it replaces is a guardrail violation.
 
-## 6. The reading protocol
+## 9. The reading protocol
 
 Starting cycle N+1 of a project that has run before? **Read the most recent cycle folder end-to-end before opening an editor**, in this order:
 
@@ -122,7 +122,7 @@ The kickoff (`00-kickoff.md`) is historical context — useful if you're new to 
 
 Discipline notes: `02-prompts.md` is the file most often skipped and most often regretted — capture prompts the minute they produce output worth keeping. `03-decisions.md` is for decisions that propagate ("we chose X over Y because…"), not naming trivia.
 
-## 7. Hygiene
+## 10. Hygiene
 
 - The toolkit is versioned and reviewed like code — promotion is a PR, not a wiki edit.
 - Every asset names its source cycle(s). An asset that can't cite its evidence is a candidate for deletion.

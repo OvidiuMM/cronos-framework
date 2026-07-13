@@ -1,6 +1,6 @@
 # Validation Report (Gate 2)
 
-**Cycle:** NNNN-slug · **Validator:** @handle (≠ Implementer) · **Date:** YYYY-MM-DD (D5)
+**Cycle:** NNNN-slug · **Validator:** @handle (≠ Implementer at Medium+ risk) · **Date:** YYYY-MM-DD (D5)
 **Checklist:** `templates/d5-checklist.md` executed — attach or link the filled copy.
 
 ## What was run cold

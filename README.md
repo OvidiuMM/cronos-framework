@@ -86,7 +86,7 @@ Cronos v2.1 uses a three-role model. (v2.0 used four roles — Solution Owner, T
 
 * **PM:** Crafts agent-ready PRDs, manages the Work Breakdown Structure (WBS), validates technical constraints, arms the plan-approval gate (Gate 1), and holds final release authority. *(absorbs the former Solution Owner + Technical Product Owner roles)*
 * **Implementer:** Acts as "Mission Control" for AI agents — intent orchestration and daily vibe coding execution. Posts the Daily Pulse. *(formerly Developer)*
-* **Validator:** Provides "Extra Human Validation." Runs the D5 survivability checklist and the adversarial validation pass. **Must not be the same person as the Implementer** (Gate 2). *(formerly Peer Reviewer)*
+* **Validator:** Provides "Extra Human Validation." Runs the D5 survivability checklist and the adversarial validation pass. **Must not be the same person as the Implementer at Medium+ risk** (Gate 2; recommended at every tier). *(formerly Peer Reviewer)*
 
 ---
 
