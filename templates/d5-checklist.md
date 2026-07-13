@@ -48,6 +48,7 @@
 - [ ] All tests pass locally on a clean checkout (`npm ci && npm test` / equivalent)
 - [ ] The verification command runs the type-check explicitly (`tsc --noEmit` / `build:check`) — a jest-only parallel gate can pass a red build
 - [ ] Every regression-guard test has a recorded **red run** — it was observed failing on the buggy code before being trusted
+- [ ] Tests trace to PRD acceptance criteria — not merely to the code as written
 - [ ] Test descriptions are human-readable and map to acceptance criteria
 
 ---

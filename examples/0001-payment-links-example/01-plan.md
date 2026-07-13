@@ -1,4 +1,6 @@
-# Plan (agent-ready PRD) — excerpt
+# Mission Control Plan — excerpt
+
+> Condensed for the example: PRD metadata and the plan merged into one file. In practice the PRD is the PM's artifact and this plan is the Implementer's — see `templates/cycle/01-plan.md`.
 
 **PRD ID:** PRD-2026-001 · **Cycle Start (D1):** 2026-03-04 (a Wednesday — D-clock: Wed, Thu, Fri, Mon, Tue)
 **PM:** @dana · **Implementer:** @edgar · **Validator:** @omar · **Risk:** Medium (payments touchpoint)

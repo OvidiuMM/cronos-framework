@@ -1,17 +1,29 @@
 # Working Prompt Log
 
-> Append during the cycle, not on D5 — a prompt's context evaporates within days.
-> Feeds `promote-cycle-learnings` at close. See `doc/learning-propagation.md`.
+Captured **as you go** — not at the end of the cycle. The moment a prompt produced output worth keeping, paste it here with one line of context. This is the file most often skipped and most often regretted; the next Implementer mines it for prompts that worked, and vague summaries help no one.
 
 **Cycle:** NNNN-slug
 
-## Working entries
+---
 
-### <short imperative title>
-- **Prompt:** "<the phrasing that worked, generalized>"
-- **What it achieved:** <one line>
-- **Context:** <one line — task, file, situation>
-- **Promotion candidate:** yes / no / already in toolkit (link)
+## Format per entry
+
+```markdown
+### <verb> <object>
+**Phase:** Initialization / Implementation / Verification / Documentation
+**Tested with:** <model + version — prompts drift in effectiveness as models change; the stamp lets the next reader judge currency>
+**Worked because:** <one line>
+**Prompt:**
+> <paste the actual prompt text>
+**What it produced:** <one or two lines>
+**Reuse notes:** <when to reuse; what to swap; what to watch>
+**Promotion candidate:** yes / no / already in toolkit (link)
+```
+
+## Entries
+
+### <first prompt>
+...
 
 ## Cautionary entries (anti-patterns — never promoted as prompts)
 

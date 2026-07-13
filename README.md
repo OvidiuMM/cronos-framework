@@ -19,11 +19,13 @@ cronos-framework/
 ├── examples/
 │   └── 0001-payment-links-example/ # A complete worked cycle folder (plan → retro)
 ├── templates/
-│   ├── agent-ready-prd.md        # Deterministic spec template for every cycle
-│   ├── cycle/                    # Cycle folder convention: prompts log, ADR log, validation, retro
+│   ├── agent-ready-prd.md        # Deterministic spec template for every cycle (the WHAT/WHY)
+│   ├── cycle/                    # Cycle folder: kickoff, Mission Control plan (the HOW), prompts log, ADR log, validation, retro
 │   ├── d5-checklist.md           # Validator survivability checklist (run on D5)
 │   └── daily-pulse.md            # Three-line async end-of-day update
 └── registry/
+    ├── claude-skills/
+    │   └── cronos/               # Behavioral agent skill: six cycle modes, gates, failure-mode catalog
     ├── cursorrules/
     │   ├── typescript.md         # Cursor rules for TypeScript projects
     │   └── python-agent.md       # Cursor rules for Python / agentic projects
@@ -158,7 +160,7 @@ Log every trigger in **PRD Section 8** and use `emergency-trigger-action.yml` to
 
 ## Verification & Release Gates
 
-**Gate 1 — Plan re-arm.** Plan amendments are classified as **Material** (new scope / changed design / superseded decision → blocks code until the PM re-approves), **Verification-fix** (in-scope fix from the verification phase → logged, no re-arm), or **Cosmetic** (→ logged, no re-arm). The Implementer proposes the class; the Validator can contest it.
+**Gate 1 — Mission Control.** The Implementer's file-level plan (`templates/cycle/01-plan.md`) is approved by the PM before any code — the cheapest hour of the cycle.  Plan amendments are classified as **Material** (new scope / changed design / superseded decision → blocks code until the PM re-approves), **Verification-fix** (in-scope fix from the verification phase → logged, no re-arm), or **Cosmetic** (→ logged, no re-arm). The Implementer proposes the class; the Validator can contest it.
 
 **Fresh-eyes audit.** Between "tests pass" and the D5 demo, a fresh agent context (or fresh human) audits an explicit file list against a 🔴/🟠/🟡/✅ rubric. Audit findings are claims, not facts — the Implementer verifies each against the actual code before acting.
 
@@ -175,9 +177,13 @@ Log every trigger in **PRD Section 8** and use `emergency-trigger-action.yml` to
 | ⏸️ **Held** | Not released; named unblock condition |
 | ↩️ **Rolled back** | Released then reverted; reason recorded |
 
+**Gate 3 — the human release gate.** The agent does not push, merge, or open PRs. Cycle close hands off to the human, who owns the release decision.
+
 **Retro is a close gate.** A cycle is not closed until the retro has all three role sections filled (or an explicit "uneventful, nothing to report" per role). Learning promotion runs only against closed cycles.
 
 **Learning propagation.** What a cycle learns must outlive the cycle: prompts, skills, and knowledge promote into a versioned AI Toolkit at close, with thresholds and backlinks. See [doc/learning-propagation.md](doc/learning-propagation.md) and the worked example in [examples/](examples/0001-payment-links-example/).
+
+**Run Cronos with Claude Code.** [`registry/claude-skills/cronos/`](registry/claude-skills/cronos/) is a drop-in behavioral skill: six operating modes (bootstrap → close) with the gates enforced in-session, a failure-modes catalog distilled from production retros, and paste-ready phase prompts.
 
 ---
 

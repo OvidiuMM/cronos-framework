@@ -1,14 +1,32 @@
-# Cycle Folder Convention
+# Cycle <NNNN>: <slug>
 
-Every Cronos cycle lives in its own folder: `cycles/NNNN-<slug>/` (zero-padded, monotonic — the number is never reused, even for abandoned cycles).
+> This file becomes the cycle's overview when you copy `templates/cycle/` into `cycles/<NNNN>-<slug>/`. Fill it in right after the copy. For the folder convention and how the files fit together, see `doc/learning-propagation.md` §5.
 
-| File | Created | Purpose |
-|---|---|---|
-| `01-plan.md` | D1 | Copy of `templates/agent-ready-prd.md`, filled. THE plan — Gate 1 operates on its Amendment Log (§9). |
-| `02-prompts.md` | D1, appended daily | Working prompt log: prompts that worked + cautionary anti-patterns. Feed for promotion. |
-| `03-decisions.md` | as decisions occur | Lightweight ADR log. Superseding a decision is cheap when the original + rationale are written down. |
-| `04-validation.md` | D5 | The Validator's report (Gate 2): what was run cold, what was traced, verdict. |
-| `05-retro.md` | D5 PM | All three roles. **The cycle is not closed until this is filled** — and `promote-cycle-learnings` runs only against closed cycles. |
-| `daily/` (optional) | daily | Daily Pulses, if committed rather than posted to chat. |
+**Project:** <name>
+**Project doc:** <link to `docs/projects/<name>/` in the product repo>
+**Cycle dates:** YYYY-MM-DD (D1) → YYYY-MM-DD (D5)
+**Risk tier:** Low / Medium / High
+**Tags:** <comma-separated — cycles are globally numbered, not grouped by project; tags are how you find a project's cycles>
 
-The folder is the cycle's complete institutional record. The next cycle's PM plans from the previous folder's retro Open Follow-ups table; the next Implementer reads the retro first.
+## People
+- **Implementer:** <name>
+- **Validator:** <name — ≠ Implementer at Medium+ risk>
+- **PM / plan approver:** <name>
+
+## Repos touched
+- `<repo-1>` — <one-line summary of what changed there>
+
+## Scope (one line per change)
+- ...
+
+## Outcome
+> Fill at cycle close. One paragraph: what shipped, what was deferred, the release decision (four states).
+
+## Reading order for the next Implementer
+1. [`05-retro.md`](05-retro.md) — lessons. Read this even if you skim the rest.
+2. [`03-decisions.md`](03-decisions.md) — decisions that may bind your work.
+3. [`02-prompts.md`](02-prompts.md) — prompts to steal.
+4. [`01-plan.md`](01-plan.md) — what last cycle's plan looked like, as a reference shape.
+5. [`04-validation.md`](04-validation.md) — what the Validator caught; look hardest there this time.
+
+The kickoff (`00-kickoff.md`) is historical context — read it if you're new to the project.
